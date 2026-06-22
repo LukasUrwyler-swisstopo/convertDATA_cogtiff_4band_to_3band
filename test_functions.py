@@ -12,7 +12,6 @@ def test_constants_and_presets():
 def test_detect_python_home_returns_string():
     from GUI_cogtiff_4band_to_3band import _detect_python_home
 
-    # Provide a plausible python executable path; function should return a string (root or apps path)
     candidate = os.path.join("C:", "OSGeo4W", "bin", "python3.exe")
     res = _detect_python_home(candidate)
     assert isinstance(res, str)

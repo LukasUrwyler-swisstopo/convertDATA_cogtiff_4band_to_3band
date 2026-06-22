@@ -117,3 +117,17 @@ _osgeo_runner.py                (OSGeo4W Python, GDAL)
 ```
 
 Die Trennung ermöglicht es, das GUI mit jeder Standard-Python-Installation zu starten, ohne OSGeo4W-Abhängigkeiten im GUI-Prozess.
+
+---
+
+## Tests
+
+Eine kleine, non-invasive Testdatei `test_functions.py` liegt im Projekt-Root und führt einfache Import-/Sanity-Checks durch (keine GDAL-Operationen).
+
+Tests ausführen:
+
+```bash
+python -m pytest -q
+```
+
+Die Tests sind bewusst leichtgewichtig, damit sie auch in Umgebungen ohne OSGeo4W schnell laufen.
