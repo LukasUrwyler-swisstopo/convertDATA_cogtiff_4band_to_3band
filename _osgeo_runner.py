@@ -1,11 +1,11 @@
 """
-_osgeo_runner.py  –  Wird via OSGeo4W Python aufgerufen (NICHT direkt starten).
+_osgeo_runner.py - Wird via OSGeo4W Python aufgerufen (NICHT direkt starten).
 Liest Parameter aus einer JSON-Datei und fuehrt GDAL-abhaengige Funktionen aus.
-Ausgabe geht auf stdout → wird vom GUI live im Log angezeigt.
+Ausgabe geht auf stdout -> wird vom GUI live im Log angezeigt.
 
 Aktionen:
-  info    – Metadaten aus Quelldatei lesen, Ergebnis als JSON auf stdout
-  convert – COGTIFF Band-Konvertierung durchfuehren, Fortschritt auf stdout
+    info    - Metadaten aus Quelldatei lesen, Ergebnis als JSON auf stdout
+    convert - COGTIFF Band-Konvertierung durchfuehren, Fortschritt auf stdout
 """
 
 import sys
@@ -89,7 +89,7 @@ def _convert(cfg: dict) -> None:
     srs        = src_ds.GetSpatialRef()
 
     _log(f"  Baender gesamt : {band_count}")
-    _log(f"  Aufloesung     : {src_ds.RasterXSize} × {src_ds.RasterYSize} px")
+    _log(f"  Aufloesung     : {src_ds.RasterXSize} x {src_ds.RasterYSize} px")
     _log(f"  Datentyp      : {gdal.GetDataTypeName(dtype)}")
     _log(f"  Koordinatensys: {srs.GetName() if srs else 'nicht gesetzt'}")
 
@@ -111,8 +111,8 @@ def _convert(cfg: dict) -> None:
 
     if any(b < 1 or b > band_count for b in output_bands):
         raise ValueError(
-            f"Ungueltige Band-Indizes {output_bands} – "
-            f"Quelldatei hat {band_count} Baender (erlaubt: 1–{band_count})."
+            f"Ungueltige Band-Indizes {output_bands} - "
+            f"Quelldatei hat {band_count} Baender (erlaubt: 1-{band_count})."
         )
 
     out_labels = [labels[b - 1] for b in output_bands]
@@ -174,12 +174,12 @@ def _convert(cfg: dict) -> None:
 
     _log("\nVerifikation:")
     _log(f"  Baender        : {verify_ds.RasterCount}")
-    _log(f"  Aufloesung     : {verify_ds.RasterXSize} × {verify_ds.RasterYSize} px")
+    _log(f"  Aufloesung     : {verify_ds.RasterXSize} x {verify_ds.RasterYSize} px")
     _log(f"  Datentyp      : {gdal.GetDataTypeName(verify_ds.GetRasterBand(1).DataType)}")
 
     size_in  = Path(input_path).stat().st_size  / (1024 ** 2)
     size_out = Path(output_path).stat().st_size / (1024 ** 2)
-    _log(f"  Dateigroesse   : {size_in:.1f} MB  →  {size_out:.1f} MB")
+    _log(f"  Dateigroesse   : {size_in:.1f} MB  ->  {size_out:.1f} MB")
 
     verify_ds = None
     _log("Fertig.")
