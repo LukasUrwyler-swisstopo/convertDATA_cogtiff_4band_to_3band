@@ -117,3 +117,29 @@ _osgeo_runner.py                (OSGeo4W Python, GDAL)
 ```
 
 Die Trennung ermöglicht es, das GUI mit jeder Standard-Python-Installation zu starten, ohne OSGeo4W-Abhängigkeiten im GUI-Prozess.
+
+---
+
+## Tests
+
+Eine kleine, non-invasive Testdatei `test_functions.py` liegt im Projekt-Root und führt einfache Import-/Sanity-Checks durch (keine GDAL-Operationen).
+
+Tests ausführen:
+
+```bash
+python -m pytest -q
+```
+
+Die Tests sind bewusst leichtgewichtig, damit sie auch in Umgebungen ohne OSGeo4W schnell laufen.
+
+---
+
+## Continuous Integration (CI)
+
+Ein einfacher GitHub Actions Workflow führt die Tests bei jedem Push auf `develop` und bei Pull-Requests aus.
+
+- Workflow-Datei: `.github/workflows/ci-tests.yml`
+- Runner: `windows-latest` (kompatibler mit lokalen Windows-Setups)
+- Schritte: Checkout → Python-Setup → `pip install pytest` → `python -m pytest -q`
+
+Der Workflow stellt sicher, dass einfache Import- und Sanity-Checks automatisch geprüft werden, bevor Änderungen gemerged werden.
