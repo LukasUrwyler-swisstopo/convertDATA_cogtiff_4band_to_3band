@@ -86,7 +86,7 @@ Der Ordner wird beim ersten Start automatisch erstellt.
 
 ## Koordinatensystem
 
-Das Koordinatensystem wird aus der Quelldatei übernommen und unverändert in die Ausgabedatei geschrieben. Für swisstopo-Daten: **EPSG:2056** (LV95 / LHN95).
+Das Koordinatensystem wird aus der Quelldatei übernommen und unverändert in die Ausgabedatei geschrieben. Für swisstopo-Daten: **EPSG:2056** (LV95 / LN02).
 
 ---
 
