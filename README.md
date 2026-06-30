@@ -2,6 +2,20 @@
 
 Konvertiert Cloud-Optimized GeoTIFFs (COG) mit beliebiger Bandanzahl in ein neues 3-Band-COG mit frei konfigurierbarem Band-Mapping.
 
+---
+
+## GUI starten
+
+```bash
+python 01_GUI_cogtiff_4band_to_3band.py
+```
+
+Beim ersten Start erkennt das GUI automatisch die OSGeo4W-Installation. Der Pfad kann über die Schaltfläche **Ändern…** manuell gesetzt und wird in `_cogtiff_config.json` gespeichert.
+
+<img width="1222" height="1360" alt="image" src="https://github.com/user-attachments/assets/fa7257c5-dab4-4c46-93dd-d6b37ba67966" />
+
+---
+
 Typische Anwendungsfälle bei swisstopo Orthophotos (DOP):
 
 | Quelle | Ausgabe | Bandauswahl |
@@ -29,18 +43,6 @@ Typische Anwendungsfälle bei swisstopo Orthophotos (DOP):
 - **GDAL-Verarbeitung:** [OSGeo4W](https://trac.osgeo.org/osgeo4w/) oder QGIS-Installation mit `python3.exe` und `osgeo`-Paket
   - Standardpfad: `C:\OSGeo4W\bin\python3.exe`
   - GDAL >= 3.1 (COG-Driver erforderlich)
-
----
-
-## GUI starten
-
-```bash
-python 01_GUI_cogtiff_4band_to_3band.py
-```
-
-Beim ersten Start erkennt das GUI automatisch die OSGeo4W-Installation. Der Pfad kann über die Schaltfläche **Ändern…** manuell gesetzt und wird in `_cogtiff_config.json` gespeichert.
-
-<img width="1222" height="1360" alt="image" src="https://github.com/user-attachments/assets/fa7257c5-dab4-4c46-93dd-d6b37ba67966" />
 
 ---
 
