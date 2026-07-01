@@ -1,22 +1,11 @@
-# COGTIFF Band-Konverter — 4-Band → 3-Band
+# COGTIFF Werkzeuge
 
-Konvertiert Cloud-Optimized GeoTIFFs (COG) mit beliebiger Bandanzahl in ein neues 3-Band-COG mit frei konfigurierbarem Band-Mapping.
+Zwei GDAL-Werkzeuge fuer Cloud-Optimized GeoTIFFs (COG), als Tabs im selben GUI:
 
----
+- **COGTIFF erstellen** — mosaikiert gekachelte `.tif`/`.tfw`-Dateien (z.B. 1km²-Kacheln) per VRT zu einem einzigen COGTIFF.
+- **Baender aendern** — konvertiert ein COG/GeoTIFF mit beliebiger Bandanzahl in ein neues COG mit frei konfigurierbarem Band-Mapping.
 
-## GUI starten
-
-```bash
-python 01_GUI_cogtiff_4band_to_3band.py
-```
-
-Beim ersten Start erkennt das GUI automatisch die OSGeo4W-Installation. Der Pfad kann über die Schaltfläche **Ändern…** manuell gesetzt und wird in `_cogtiff_config.json` gespeichert.
-
-<img width="1222" height="1360" alt="image" src="https://github.com/user-attachments/assets/fa7257c5-dab4-4c46-93dd-d6b37ba67966" />
-
----
-
-Typische Anwendungsfälle bei swisstopo Orthophotos (DOP):
+Typische Anwendungsfälle mit swisstopo-Luftbildern (DOP) fuer die Band-Konvertierung:
 
 | Quelle | Ausgabe | Bandauswahl |
 |--------|---------|-------------|
@@ -46,7 +35,19 @@ Typische Anwendungsfälle bei swisstopo Orthophotos (DOP):
 
 ---
 
-## Bedienung
+## GUI starten
+
+```bash
+python 01_GUI_cogtiff_4band_to_3band.py
+```
+
+Beim ersten Start erkennt das GUI automatisch die OSGeo4W-Installation. Der Pfad kann über die Schaltfläche **Ändern…** manuell gesetzt und wird in `_cogtiff_config.json` gespeichert.
+
+<img width="1222" height="1360" alt="image" src="https://github.com/user-attachments/assets/fa7257c5-dab4-4c46-93dd-d6b37ba67966" />
+
+---
+
+## Bedienung — Tab "Baender aendern"
 
 1. **Input-Datei** auswählen (4-Band COG-TIFF oder GeoTIFF)
 2. **Output-Datei** festlegen (wird automatisch vorgeschlagen)
@@ -57,19 +58,40 @@ Typische Anwendungsfälle bei swisstopo Orthophotos (DOP):
 
 ---
 
+## Bedienung — Tab "COGTIFF erstellen" (Mosaik aus Kacheln)
+
+Mosaikiert gekachelte `.tif`/`.tfw`-Dateien (z.B. 1km²-Kacheln, keine eingebettete CRS-Info) per VRT
+zu einem einzigen COGTIFF. Entspricht der Pipeline `gdalbuildvrt` → `gdal_translate -of COG`.
+
+1. **Input-Ordner** waehlen (enthaelt die `.tif`/`.tfw`-Kacheln)
+2. **Output-Ordner** waehlen — das COGTIFF wird direkt hier abgelegt, die VRT-Zwischendatei im
+   automatisch angelegten Unterordner `vrt/`
+3. **Ausgabedateiname** angeben (ohne Endung)
+4. **Bit-Tiefe** des Inputs waehlen (8bit/16bit) — steuert die passenden NoData-Vorschlaege
+5. **NoData-Wert** waehlen: 8bit → `0 0 0` / `255 255 255`; 16bit → `0 0 0 0` / `65535 65535 65535`;
+   gilt gemeinsam fuer `-srcnodata`, `-vrtnodata` und `-a_nodata`
+6. **COG-Optionen** anpassen (Kompression inkl. JPEG mit Qualitaets-Regler, Kachelgrösse, Overviews, Resampling)
+7. **COGTIFF ERSTELLEN** starten
+
+> **Koordinatensystem:** wird beim Mosaik-Tab fest auf **EPSG:2056** (LV95) gesetzt, da Kachel-TIFFs
+> mit `.tfw`-Begleitdatei i.d.R. keine CRS-Information eingebettet haben.
+
+---
+
 ## COG-Optionen
 
 | Option | Standard | Beschreibung |
 |--------|----------|-------------|
-| Kompression | `DEFLATE` | Verlustfreie Kompression mit Predictor=2 |
-| Kachelgrösse | `256` | Interne Kachelgrösse in Pixel (256 oder 512) |
+| Kompression | `DEFLATE` (Baender-Tab) / `JPEG` (Mosaik-Tab) | `DEFLATE`/`LZW`/`ZSTD` = verlustfrei mit Predictor=2; `JPEG` = verlustbehaftet mit Qualitaets-Regler; `NONE` = unkomprimiert |
+| JPEG-Qualitaet | `90` (Baender-Tab) / `95` (Mosaik-Tab) | Nur relevant bei Kompression=JPEG, Bereich 60–100 |
+| Kachelgrösse | `256` | Interne Kachelgrösse in Pixel (256, 512 oder 1024) |
 | Overviews | `AUTO` | Eingebettete Übersichtsebenen (COG-intern, keine .ovr-Datei) |
-| OV-Resampling | `LANCZOS` | Interpolation für Overviews — LANCZOS empfohlen für Luftbilder |
-| NoData | auto | Wird aus Quelldatei erkannt; bei Alpha-Band automatisch auf 0 gesetzt |
+| OV-Resampling | `LANCZOS` (Baender-Tab) / `AVERAGE` (Mosaik-Tab) | Interpolation für Overviews — LANCZOS empfohlen für Einzel-Luftbilder, AVERAGE fuer Mosaike |
+| NoData | auto (Baender-Tab) / Dropdown nach Bit-Tiefe (Mosaik-Tab) | Baender-Tab: aus Quelldatei erkannt, bei Alpha-Band automatisch auf 0 gesetzt |
 
-> **Hinweis Kachelgrösse:** 256 ist der Standard für DOP-Publikation (z.B. STAC, WMTS). 512 bietet bessere Kompressionsrate bei weniger HTTP-Requests, ist aber weniger kompatibel mit Standard-Tile-Clients.
+> **Hinweis Kachelgrösse:** 256 ist der Standard für DOP-Publikation (z.B. STAC, WMTS). 512/1024 bieten bessere Kompressionsrate bei weniger HTTP-Requests, sind aber weniger kompatibel mit Standard-Tile-Clients.
 
-> **Hinweis Overviews:** Bei COG sind Overviews intern eingebettet — es entsteht keine separate `.ovr`-Datei. `LANCZOS`-Resampling liefert die schärfsten Ergebnisse für RGB-Luftbilder.
+> **Hinweis Overviews:** Bei COG sind Overviews intern eingebettet — es entsteht keine separate `.ovr`-Datei. `LANCZOS`-Resampling liefert die schärfsten Ergebnisse für RGB-Luftbilder, `AVERAGE` ist fuer Mosaike glaetter/robuster gegen Kachel-Naehte.
 
 ---
 
@@ -88,7 +110,10 @@ Der Ordner wird beim ersten Start automatisch erstellt.
 
 ## Koordinatensystem
 
-Das Koordinatensystem wird aus der Quelldatei übernommen und unverändert in die Ausgabedatei geschrieben. Für swisstopo-Daten: **EPSG:2056** (LV95 / LN02).
+- **Baender aendern:** Das Koordinatensystem wird aus der Quelldatei übernommen und unverändert in die Ausgabedatei geschrieben.
+- **COGTIFF erstellen (Mosaik):** Wird fest auf **EPSG:2056** (LV95) gesetzt, da Kachel-TIFFs mit `.tfw`-Begleitdatei i.d.R. keine CRS-Information eingebettet haben.
+
+Für swisstopo-Daten massgebend: **EPSG:2056** (LV95 / LHN95).
 
 ---
 
@@ -112,6 +137,7 @@ Konfiguration direkt im Script-Kopf anpassen (`INPUT_PATH`, `OUTPUT_PATH`, `OUTP
         │  JSON-Config (tempfile)
         ▼
 _osgeo_runner.py                (OSGeo4W Python, GDAL)
+    Aktionen: info / convert / mosaic
         │
         │  stdout → live ins GUI-Log + Logdatei
         ▼
@@ -133,15 +159,3 @@ python -m pytest -q
 ```
 
 Die Tests sind bewusst leichtgewichtig, damit sie auch in Umgebungen ohne OSGeo4W schnell laufen.
-
----
-
-## Continuous Integration (CI)
-
-Ein einfacher GitHub Actions Workflow führt die Tests bei jedem Push auf `develop` und bei Pull-Requests aus.
-
-- Workflow-Datei: `.github/workflows/ci-tests.yml`
-- Runner: `windows-latest` (kompatibler mit lokalen Windows-Setups)
-- Schritte: Checkout → Python-Setup → `pip install pytest` → `python -m pytest -q`
-
-Der Workflow stellt sicher, dass einfache Import- und Sanity-Checks automatisch geprüft werden, bevor Änderungen gemerged werden.
