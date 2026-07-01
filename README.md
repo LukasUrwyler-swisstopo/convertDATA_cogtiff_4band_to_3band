@@ -6,6 +6,7 @@ Zwei GDAL-Werkzeuge fuer Cloud-Optimized GeoTIFFs (COG), als Tabs im selben GUI:
 - **Baender aendern** — konvertiert ein COG/GeoTIFF mit beliebiger Bandanzahl in ein neues COG mit frei konfigurierbarem Band-Mapping.
 
 ## GUI
+
 ```bash
 python 01_GUI_cogtiff_4band_to_3band.py
 ```
