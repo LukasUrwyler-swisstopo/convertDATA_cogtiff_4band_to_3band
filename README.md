@@ -5,6 +5,13 @@ Zwei GDAL-Werkzeuge fuer Cloud-Optimized GeoTIFFs (COG), als Tabs im selben GUI:
 - **COGTIFF erstellen** — mosaikiert gekachelte `.tif`/`.tfw`-Dateien (z.B. 1km²-Kacheln) per VRT zu einem einzigen COGTIFF.
 - **Baender aendern** — konvertiert ein COG/GeoTIFF mit beliebiger Bandanzahl in ein neues COG mit frei konfigurierbarem Band-Mapping.
 
+## GUI
+```bash
+python 01_GUI_cogtiff_4band_to_3band.py
+```
+<img width="1219" height="1366" alt="grafik" src="https://github.com/user-attachments/assets/b081dea5-0b55-4a55-acaf-975c1041c208" />
+
+
 Typische Anwendungsfälle mit swisstopo-Luftbildern (DOP) fuer die Band-Konvertierung:
 
 | Quelle | Ausgabe | Bandauswahl |
